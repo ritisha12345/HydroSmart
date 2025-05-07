@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+<div class="main-container">
+    <div class="left-side">
+        <h2>HydroSmart</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="location" id="location-input" placeholder="Enter location..." required>
+            <button type="submit" name="action" value="predict">Predict</button><br><br>
+
+            <input type="file" name="file">
+            <button type="submit" name="action" value="upload">Upload CSV/Text File</button><br><br>
+
+            <textarea name="feedback" placeholder="Your feedback..." rows="4"></textarea><br>
+            <button type="submit" name="action" value="feedback">Submit Feedback</button><br><br>
+        </form>
+
+        {% if prediction %}
+            <h3>Prediction: {{ prediction }}</h3>
+            <h3>Confidence: {{ confidence }}%</h3>
+        {% endif %}
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <div class="right-side">
+        <div class="user-profile">
+            <img src="{{ url_for('static', filename='user-icon.png') }}" alt="Profile Picture">
+        </div>
+
+        <div id="map" class="map"></div>
+
+        {% if groundwater_info %}
+        <div class="card" style="margin-top: 20px;">
+            <h3>Groundwater Information</h3>
+            <ul>
+                <li><strong>Water Quality:</strong> {{ groundwater_info.quality }}</li>
+                <li><strong>Expected Depth:</strong> {{ groundwater_info.depth }}</li>
+                <li><strong>Water Discharge:</strong> {{ groundwater_info.discharge }}</li>
+                <li><strong>Recommended Drilling Techniques:</strong> {{ groundwater_info.techniques }}</li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+// Initialize the map centered on India
+var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+{% if prediction %}
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q={{ request.form.get('location') }}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.length > 0) {
+            var lat = data[0].lat;
+            var lon = data[0].lon;
+            var marker = L.marker([lat, lon]).addTo(map)
+                .bindPopup("{{ request.form.get('location') }}")
+                .openPopup();
+            map.setView([lat, lon], 10);
+        }
+    });
+{% endif %}
+</script>
+
+</body>
+</html>
