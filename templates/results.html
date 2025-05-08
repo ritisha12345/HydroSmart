@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - Groundwater Site Selection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .map-container {
+            height: 400px;
+            margin-bottom: 2rem;
+        }
+        .result-card {
+            transition: transform 0.2s;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Groundwater AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/input">Analyze Location</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h2 class="mb-4">Analysis Results for {{ location }}</h2>
+        
+        <!-- Map Section -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Location Map</h5>
+            </div>
+            <div class="card-body">
+                <div class="map-container">
+                    {{ map_html|safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 result-card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Site Suitability</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{ groundwater_info.suitability }}</h3>
+                        <p class="text-muted">Confidence: {{ groundwater_info.confidence }}%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 result-card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Water Quality</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{ groundwater_info.quality }}</h3>
+                        <p class="text-muted">Expected depth: {{ groundwater_info.depth }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 result-card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Water Discharge</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{ groundwater_info.discharge }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 result-card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Recommended Techniques</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{ groundwater_info.techniques }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <a href="/input" class="btn btn-primary me-2">Analyze Another Location</a>
+            <a href="/download" class="btn btn-outline-primary">Download Results (CSV)</a>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Groundwater Site Selection AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
